@@ -1,7 +1,9 @@
+(* From Blelloch & Reid-Miller, 1997. https://dl.acm.org/doi/pdf/10.1145/258492.258517 *)
+
 val size = 1000
 val grain = 500
-(* works better with 4 processors than 1, but is significantly 
- * slower (3.6 ms) than with no futures (.14 ms) *)
+(* works better with 4 processors (3539 microseconds) than 1 (6264 microseconds) *)
+(* but doesn't really improve speed from no futures version *)
 
 (* implemented by schedulers/spoonhower *)
 structure Future = FutureSuspend
@@ -19,7 +21,7 @@ fun consume' (sum,[]) = sum
 
 fun consume (sum,null) = sum
   | consume (sum,cons(x,xs)) = 
-      if x <= grain then consume' (sum, produce' x) 
+      if x <= grain then consume' (sum, produce' x)
       else consume (x + sum, Future.touch xs)
 
 val t0 = Time.now ()
