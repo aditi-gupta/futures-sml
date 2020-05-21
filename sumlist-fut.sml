@@ -1,17 +1,16 @@
-val size = 10
+val size = 50
 (* TODO: val grain *)
 
 (* implemented by schedulers/spoonhower *)
 structure Future = FutureSuspend
 
-fun fact 0 = 1
-  | fact n = n * fact (n-1)
+datatype list = null | cons of int * list Future.t
 
-fun produce 0 = []
-  | produce n = Future.future (fn () => fact n) :: produce (n-1)
+fun produce 0 = null
+  | produce n = cons (n, Future.future (fn () => produce (n-1)))
 
-fun consume (sum,[]) = sum 
-  | consume (sum,x::xs) = consume (Future.touch x + sum,xs)
+fun consume (sum,null) = sum
+  | consume (sum,cons(x,xs)) = consume (x + sum, Future.touch xs)
 
 val t0 = Time.now ()
 val result = consume (0,produce size)
