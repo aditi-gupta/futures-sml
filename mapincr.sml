@@ -2,6 +2,8 @@
 (* From http://www.cs.cmu.edu/afs/cs/academic/class/15210-f15/www/tapp.html#ch:futures *)
 
 val n = 10000
+(* significant slowdown as # of processors increases; 
+ * 33 ms w/ 1 processor, 43 w/ 2, 50 w/ 3, 56 w/ 4 *)
 
 structure Future = FutureSuspend
 
@@ -19,4 +21,4 @@ val t0 = Time.now ()
 val result = mapincr original
 val t1 = Time.now ()
 
-val _ = print (LargeInt.toString (Time.toMicroseconds (Time.- (t1, t0))) ^ " us\n")
+val _ = print (LargeInt.toString (Time.toMilliseconds (Time.- (t1, t0))) ^ " ms\n")
