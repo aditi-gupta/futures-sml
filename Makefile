@@ -3,9 +3,9 @@ MLTRACE=/opt/mlton-parmem/build/bin/mltrace
 DBG=-keep g -debug true -debug-runtime true
 FLAGS=
 
-.PHONY: mapincr sumlist-fut tab tab.dbg fib fib.dbg fib-fut clean
+.PHONY: merge mapincr sumlist-fut tab tab.dbg fib fib.dbg fib-fut clean
 
-all: fib fib-fut tab sumlist-fut mapincr
+all: fib fib-fut tab sumlist-fut mapincr merge
 
 fib-fut: fib-fut.sml fib-fut.mlb
 	$(MLTON) $(FLAGS) -output fib-fut fib-fut.mlb
@@ -33,6 +33,9 @@ mapincr: mapincr.sml mapincr.mlb
 
 mapincr.dbg: mapincr.sml mapincr.mlb
 	$(MLTON) $(FLAGS) $(DBG) -output mapincr.dbg mapincr.mlb
+
+merge: merge.sml merge.mlb
+	$(MLTON) $(FLAGS) -output merge merge.mlb
 
 clean:
 	rm -f tab tab.dbg fib fib.dbg tab.*.c fib.*.c sumlist-fut.*.c
