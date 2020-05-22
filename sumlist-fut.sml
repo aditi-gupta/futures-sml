@@ -4,9 +4,13 @@ val size = 1000
 val grain = 500
 
 (* RESULTS
- * works better with 4 processors (3539 microseconds) than 1 (6264 microseconds)
- * but doesn't really improve speed from no futures version 
- * with grain = 0, more processors keep it mostly constant
+ * 4 processors => 3539 microseconds; 1 processor => 6264 microseconds
+ * with grain = 0, more processors keeps time mostly constant
+ * with grain = 2000, i.e. no futures, 1 processors takes 6150 microseconds and 
+ * 4 takes 142 microseconds
+ * 
+ * with size = 500, grain = 250, very little speedup between 1 (2651 microseconds) 
+ * and 4 (2595 microseconds) processors - again mostly constant
  *)
 
 (* implemented by schedulers/spoonhower *)
