@@ -4,15 +4,16 @@
 val depth1 = 20
 val depth2 = 10
 
-val grain = 5
+val grain = 30
 
-(* RESULTS
+(* RESULTS (A/B means depth1 = A, depth2 = B)
  *
  * NO GRANULARITY:
  * with 20/10: 1 processor takes 87 ms, 3 processors takes 9 ms. 
  * with 10/20: 1 processor takes 82 ms, 3 processors takes 6 ms.
  * other numbers do not seem to work as well; 
  * not much difference between 1 and > 1 processors.
+ * with 20/20: 1 processor takes 30 ms, 3 processors takes 30 ms.
  * with 30/10: 1 processor takes 9 ms, 3 processors takes 9 ms.
  * with 10/30: 1 processor takes 6 ms, 3 processors takes 9 ms.
  * with 11/22: 1 processor takes 8 ms, 3 processors takes 9 ms.
@@ -23,6 +24,10 @@ val grain = 5
  * 
  * WITH GRANULARITY 5:
  * with 20/10: 1 processor takes 76 ms, 3 processors takes 6 ms.
+ * with 20/20: 1 processor takes 21 ms, 3 processors takes 21 ms.
+ * 
+ * WITH GRANULARITY 30, I.E. NO FUTURES:
+ * with 20/10: 1 processor takes < 1 ms, 3 processors takes < 1 ms.
  *)
 
 structure Future = FutureSuspend
