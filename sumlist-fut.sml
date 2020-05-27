@@ -51,6 +51,26 @@ val grain = 500
    Produce Time: 34 us
    Consume Time: 4993 us
    Total Time:   5027 us
+
+ * FutureSuspendDelay (instead of FutureSuspend), 1000/500:
+ * aditig@pbbs:~/examples$ ./sumlist-fut @MLton number-processors 1 --
+   Produce Time: 1 us
+   Consume Time: 344 us
+   Total Time:   345 us
+ * aditig@pbbs:~/examples$ ./sumlist-fut @MLton number-processors 4 --
+   Produce Time: 2 us
+   Consume Time: 749 us
+   Total Time:   751 us
+
+ * FutureSuspendMaybeDelay (instead of FutureSuspend), 1000/500:
+ * aditig@pbbs:~/examples$ ./sumlist-fut @MLton number-processors 1 --
+   Produce Time: 342 us
+   Consume Time: 62 us
+   Total Time:   404 us
+ * aditig@pbbs:~/examples$ ./sumlist-fut @MLton number-processors 4 --
+   Produce Time: 35 us
+   Consume Time: 1360 us
+   Total Time:   1395 us
  *)
 
 (* implemented by schedulers/spoonhower *)
