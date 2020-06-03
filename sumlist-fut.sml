@@ -1,7 +1,7 @@
 (* From Blelloch & Reid-Miller, 1997. https://dl.acm.org/doi/pdf/10.1145/258492.258517 *)
 
-val size = 1000 (* if you go above this you start getting "copying!" and "resizing!" messages *)
-val grain = 500
+val size = 800 (* if you go above this you start getting "copying!" and "resizing!" messages *)
+val grain = 100
 
 (* RESULTS
  * 1000/500:
@@ -13,6 +13,16 @@ val grain = 500
    Produce Time: 30 us
    Consume Time: 3586 us
    Total Time:   3616 us
+
+ * 800/100:
+ * aditig@pbbs:~/examples$ ./sumlist-fut @MLton number-processors 1 --
+   Produce Time: 4245 us
+   Consume Time: 77 us
+   Total Time:   4322 us
+ * aditig@pbbs:~/examples$ ./sumlist-fut @MLton number-processors 4 --
+   Produce Time: 33 us
+   Consume Time: 4102 us
+   Total Time:   4135 us
 
  * 1000/~1: (completely futures)
  * aditig@pbbs:~/examples$ ./sumlist-fut @MLton number-processors 1 --
