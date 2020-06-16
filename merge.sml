@@ -2,49 +2,35 @@
 (* https://dl.acm.org/doi/pdf/10.1145/258492.258517 *)
 
 val depth1 = 20
-val depth2 = 10
+val depth2 = 30
 
-val grain = 30
-
-(* RESULTS (A/B means depth1 = A, depth2 = B)
- *
- * NO GRANULARITY:
- * with 20/10: 1 processor takes 87 ms, 3 processors takes 9 ms. 
- * with 10/20: 1 processor takes 82 ms, 3 processors takes 6 ms.
- * other numbers do not seem to work as well; 
- * not much difference between 1 and > 1 processors.
- * with 20/20: 1 processor takes 30 ms, 3 processors takes 30 ms.
- * with 30/10: 1 processor takes 9 ms, 3 processors takes 9 ms.
- * with 10/30: 1 processor takes 6 ms, 3 processors takes 9 ms.
- * with 11/22: 1 processor takes 8 ms, 3 processors takes 9 ms.
- * 
- * WITH GRANULARITY 10:
- * with 20/10: 1 processor takes 2 ms, 3 processors takes 3 ms.
- * with 20/20: 1 processor takes 11 ms, 3 processors takes 11 ms.
- * 
- * WITH GRANULARITY 5:
- * with 20/10: 1 processor takes 76 ms, 3 processors takes 6 ms.
- * with 20/20: 1 processor takes 21 ms, 3 processors takes 21 ms.
- * 
- * WITH GRANULARITY 30, I.E. NO FUTURES:
- * with 20/10: 1 processor takes < 1 ms, 3 processors takes < 1 ms.
- *)
+val fib_size = 20
+val grain = 5
 
 structure Future = FutureSuspend
 
 datatype tree = empty | node of int * tree * tree
+type tree' = tree * int
+
+val r = ref 0
+
+fun fib 0 = 1
+  | fib 1 = 1
+  | fib n = fib (n-1) + fib (n-2)
 
 fun split (s,empty) = Future.future (fn () => (empty,empty))
   | split (s,node(v,L,R)) = 
       if s < v then 
         Future.future (fn () => 
           let val (L1,R1) = Future.touch (split (s,L))
+              val () = r := fib fib_size
           in (L1,node(v,R1,R))
           end
         )
-      else 
+      else
         Future.future (fn () =>
           let val (L1,R1) = Future.touch (split (s,R))
+              val () = r := fib fib_size
           in (node(v,L,L1),R1)
           end
         )
@@ -54,10 +40,12 @@ fun split' (s,empty) = (empty,empty)
   | split' (s,node(v,L,R)) =
       if s < v then
         let val (L1,R1) = split' (s,L)
+            val () = r := fib fib_size
         in (L1,node(v,R1,R))
         end
       else 
         let val (L1,R1) = split' (s,R)
+            val () = r := fib fib_size
         in (node(v,L,L1),R1)
         end
 
@@ -89,7 +77,7 @@ local
             val R = build' (depth - 1) (root + diff) (diff div 2)
         in node (root,L,R)
         end
-in 
+in
   fun build d = build' d (d * 2) d
 end
 
@@ -97,7 +85,7 @@ val t1 = build depth1
 val t2 = build depth2
 
 val t0 = Time.now ()
-val result = merge (t1,t2) depth1
+val result = merge (t1,t2) (Int.max (depth1,depth2))
 val t1 = Time.now ()
 
 val _ = print (LargeInt.toString (Time.toMilliseconds (Time.- (t1, t0))) ^ " ms\n")
