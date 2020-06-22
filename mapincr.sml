@@ -7,14 +7,24 @@ val n = 10000
 
 structure Future = FutureSuspend
 
+datatype list' = Fut of list Future.t | Val of list
+and list = null | cons of int * list'
+
 val rec mapincr_help = fn D => fn
     [] => D
   | x::xs => mapincr_help (Future.future (fn () => (Future.touch x) + 1) :: D) xs
 
-fun produce 0 = []
-  | produce n = Future.future (fn () => n) :: produce (n-1)
+fun produce 0 = null
+  | produce n = cons (n,Fut (Future.future (fn () => produce (n-1))))
 
-val mapincr = mapincr_help []
+fun mapincr' acc null = acc
+  | mapincr' acc (cons (x,xs)) = (
+    case xs of
+      Fut f => mapincr' (cons (x,acc)) (Future.touch f)
+    | Val l => mapincr' (cons (x,acc)) l
+  )
+
+val mapincr = mapincr' null
 val original = produce n
 
 val t0 = Time.now ()
