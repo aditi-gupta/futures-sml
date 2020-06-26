@@ -28,24 +28,14 @@ val rec filter = fn c => fn d => fn
 | cons_val (prime,l) =>
     if c > 0 then cons_val (prime,filter (c-1) (d+1) l)
     else cons_val (composite,filter d 0 l)
-| cons_fut (composite,f) => cons_val (composite,
+(* | cons_fut (composite,f) => cons_val (composite,
     if c > 0 then filter (c-1) (d+1) (Future.touch f)
     else filter d 0 (Future.touch f)
-  )
+  ) *)
 | cons_val (composite,l) => cons_val (composite,
     if c > 0 then filter (c-1) (d+1) l
     else filter d 0 l
   )
-
-(* val rec filter : (int -> int -> plist' -> plist') = fn c => fn d => fn
-  null => null
-| cons (prime,l) =>
-    if c > 0 then cons (prime,filter (c-1) (d+1) l)
-    else cons (composite,filter d 0 l)
-| cons (composite,l) => cons (composite,
-    if c > 0 then filter (c-1) (d+1) l
-    else filter d 0 l
-  ) *)
 
 val rec head = fn x => fn g => fn
   null => null
@@ -63,24 +53,8 @@ val rec head = fn x => fn g => fn
         then cons_fut (prime, Future.future (fn () => filter x 0 l))
         else cons_val (prime, filter x 0 l)
     )
-| cons_fut (composite,f) => cons_val (composite, head (x + 1) g (Future.touch f))
+| cons_fut (composite,f) => raise Fail "got here" (* cons_val (composite, head (x + 1) g (Future.touch f)) *)
 | cons_val (composite,l) => cons_val (composite, head (x + 1) g l)
-
-(* val rec head : (int -> int -> plist -> plist) = fn x => fn g => fn s =>
-  case to_val s of
-    Prime t => Val (Prime (
-      head (x + 1) (g + 1) (
-        if x > HALF then t
-        else if g mod GRAIN = 0 orelse g < 10 (* andalso x < MAX *)
-        then (print "future\n"; Fut (Future.future (fn () => filter x 0 t),ref 1))
-        else Val (filter x 0 t)
-      )
-    ))
-  | Composite t => Val (Composite (
-      head (x + 1) g t
-     ))
-  | End => Val End) *)
-
 
 val rec candidates = fn x =>
   if x > 0 then cons_val (prime, candidates (x-1))
