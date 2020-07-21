@@ -21,9 +21,6 @@ val rec to_string = fn s =>
   | Composite s' => "Comp (" ^ to_string s' ^ ")"
   | End => "End"
 
-(* artificially inflate the work of each future *)
-(* val inflate = fn () => OS.Process.sleep SLEEP_TIME *)
-
 val rec filter : (int -> int -> stream -> int -> stream') = fn c => fn d => fn s => fn g =>
   let
     val par = g mod GRAIN = 0
