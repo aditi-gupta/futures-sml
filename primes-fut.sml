@@ -50,17 +50,17 @@ val rec filter : (int -> int -> stream -> int -> stream') = fn c => fn d => fn s
 (* x is the current number in the stream to consider,
  * k is the length of the stream (k * k is the potential needed for this function),
  * and s is the stream itself *)
-val rec head : (int -> int -> stream -> stream) = fn x => fn g => fn s =>
+val rec head : (int -> stream -> stream) = fn x => fn s =>
   case to_val s of
     Prime t => Val (Prime (
-      head (x+1) (g+1) (
-        if g mod GRAIN = 0
+      head (x+1) (
+        if x mod GRAIN = 0
         then Fut (Future.future (fn () => filter x 0 t 0))
         else Val (filter x 0 t 0)
       )
     ))
   | Composite t => Val (Composite (
-      head (x+1) (g+1) t
+      head (x+1) t
      ))
   | End => Val End
 
@@ -68,7 +68,7 @@ val rec candidates = fn x =>
   if x > 0 then Val (Prime (candidates (x-1)))
   else Val End
 
-val primes = head 1 0 o candidates
+val primes = head 1 o candidates
 
 val t0 = Time.now ()
 val result = primes SIZE
