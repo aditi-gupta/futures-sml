@@ -32,7 +32,7 @@ val rec filter : (int -> int -> stream -> int -> stream') = fn c => fn d => fn s
           else Val (filter (c-1) (d+1) t (g+1))
         )
         else Composite (
-          if par then Fut ((Future.future (fn () => filter d 0 t (g+1))))
+          if par then Fut (Future.future (fn () => filter d 0 t (g+1)))
           else Val (filter d 0 t (g+1))
         )
     | Composite t =>
@@ -41,7 +41,7 @@ val rec filter : (int -> int -> stream -> int -> stream') = fn c => fn d => fn s
           else Val (filter (c-1) (d+1) t (g+1))
         )
         else Composite (
-          if par then Fut ((Future.future (fn () => filter d 0 t (g+1))))
+          if par then Fut (Future.future (fn () => filter d 0 t (g+1)))
           else Val (filter d 0 t (g+1))
         )
     | End => End
