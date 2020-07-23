@@ -7,18 +7,17 @@ val grain = 1000
 structure Future = FutureSuspend
 
 datatype list' = Fut of list Future.t | Val of list
-and list = null | cons of int * list'
+     and list  = null | cons of int * list'
 
 (* produces a list of decreasing integers *)
 fun produce_par 0 = null
-  | produce_par n = (print "producing future\n";
-      cons (n,Fut (Future.future (fn () => produce (n-1)))))
+  | produce_par n = cons (n,Fut (Future.future (fn () => produce (n-1))))
 
 and produce_seq 0 = null
   | produce_seq n = cons (n,Val (produce (n-1)))
 
 and produce n =
-  case n mod (grain + 1) of
+  case n mod grain of
     0 => produce_par n
   | _ => produce_seq n
 
