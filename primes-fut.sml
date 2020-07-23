@@ -47,9 +47,6 @@ val rec filter : (int -> int -> stream -> int -> stream') = fn c => fn d => fn s
     | End => End
   end
 
-(* x is the current number in the stream to consider,
- * k is the length of the stream (k * k is the potential needed for this function),
- * and s is the stream itself *)
 val rec head : (int -> stream -> stream) = fn x => fn s =>
   case to_val s of
     Prime t => Val (Prime (
@@ -59,9 +56,7 @@ val rec head : (int -> stream -> stream) = fn x => fn s =>
         else Val (filter x 0 t 0)
       )
     ))
-  | Composite t => Val (Composite (
-      head (x+1) t
-     ))
+  | Composite t => Val (Composite (head (x+1) t))
   | End => Val End
 
 val rec candidates = fn x =>
